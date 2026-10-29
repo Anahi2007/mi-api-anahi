@@ -1,0 +1,386 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using TIEN_LAN_ZU_SHI.Business.DTOs;
+using TIEN_LAN_ZU_SHI.Business.Interfaces;
+using TIEN_LAN_ZU_SHI.Core.Common;
+using TIEN_LAN_ZU_SHI.Core.Entities;
+using TIEN_LAN_ZU_SHI.DataAccess.Interfaces;
+using TIEN_LAN_ZU_SHI.DataAccess.Repositories;
+
+namespace TIEN_LAN_ZU_SHI.Business.Services
+{
+    public class ProductService:IProductService
+    {
+        private readonly IProductRepository _productRepository;
+        //private readonly ICategoryRepository _categoryRepository;
+
+       
+        public ProductService(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+            //_categoryRepository = categoryRepository;
+        }
+
+  
+        public async Task<ServiceResponse<IEnumerable<Product>>> GetAllAsync()
+        {
+            var result = await _productRepository.GetAllAsync();
+
+            if (result.OperationStatusCode == 0)
+            {
+                return new ServiceResponse<IEnumerable<Product>>()
+                {
+                    Data = result.Data,
+                    IsSuccess = true,
+                    MessageCode = MessageCodes.Sucess,
+                    Message = "Operacion exitosa"
+                };
+            }
+
+            
+
+            switch (result.OperationStatusCode)
+            {
+                case 5026:
+                    return new ServiceResponse<IEnumerable<Product>>
+                    {
+                        Data = result.Data,
+                        IsSuccess = true,
+                        MessageCode = MessageCodes.NoData,
+                        Message = "No se encontaron registros"
+                    };
+
+                default:
+                    return new ServiceResponse<IEnumerable<Product>>
+                    {
+                        Data = null,
+                        IsSuccess = false,
+                        MessageCode = MessageCodes.ErrorDataBase,
+                        Message = "Ocurrio un error inesperado"
+                    };
+            }
+
+           
+        }
+
+
+
+        public async Task<ServiceResponse<Product>> GetByIdAsync(int id)
+        {
+            var repoResponse = await _productRepository.GetByIdAsync(id);
+
+            try
+            {
+                if (repoResponse.OperationStatusCode == 0)
+                {
+                    return new ServiceResponse<Product>
+                    {
+                        Data = repoResponse.Data,
+                        IsSuccess = true,
+                        MessageCode = MessageCodes.Sucess,
+                        Message = repoResponse.Message ?? "Operacion exitosa"
+
+                    };
+                }
+
+                switch (repoResponse.OperationStatusCode)
+                {
+                    case 5031:
+                        return new ServiceResponse<Product>
+                        {
+                            Data = null,
+                            IsSuccess = false,
+                            MessageCode = MessageCodes.NotFound,
+                            Message = repoResponse.Message ?? "No se encontro registro asociado  al Id proporcionado"
+
+                        };
+
+
+                    default:
+                        return new ServiceResponse<Product>
+                        {
+                            Data = null,
+                            IsSuccess = false,
+                            MessageCode = MessageCodes.ErrorDataBase,
+                            Message = repoResponse.Message ?? "Ocurrio un error inesperado"
+
+                        };
+
+                }
+            }
+            catch (Exception)
+            {
+                return new ServiceResponse<Product>
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    MessageCode = MessageCodes.ErrorDataBase,
+                    Message = repoResponse.Message ?? "Ocurrio un error inesperado"
+
+                };
+
+
+            }
+        }
+
+
+        public async Task<ServiceResponse<Product>> GetByNameAsync(string name)
+        {
+            var result = await _productRepository.GetByNameAsync(name);
+            if (result.OperationStatusCode == 0)
+            {
+                return new ServiceResponse<Product>
+                {
+                    Data = result.Data,
+                    IsSuccess = true,
+                    MessageCode = MessageCodes.Sucess,
+                    Message = "Operacion exitosa"
+                };
+            }
+
+            var messageCode = new MessageCodes();
+            var message = string.Empty;
+
+            switch (result.OperationStatusCode)
+            {
+                case 5039:
+                    messageCode = MessageCodes.NotFound;
+                    message = "No se encontro producto con ese Name proporcionado";
+                    break;
+
+                default:
+                    messageCode = MessageCodes.ErrorDataBase;
+                    message = "Error en la base de datos al obtener el producto.";
+                    break;
+            }
+
+            
+            return new ServiceResponse<Product>
+            {
+                Data = null,
+                IsSuccess = false,
+                MessageCode = messageCode,
+                Message = message
+            };
+        }
+
+
+        public async Task<ServiceResponse<Product>> CreateAsync(CreateProductDto newProduct)
+        {
+            try
+            {
+                
+                var existingProduct = await _productRepository.GetByNameAsync(newProduct.ProductName);
+
+                if (existingProduct.Data!.Id != 0 && !existingProduct.Data.ProductName.IsNullOrEmpty())
+                {
+                    return new ServiceResponse<Product>
+                    {
+                        Data = null,
+                        IsSuccess = false,////*//
+                        MessageCode = MessageCodes.Conflict,
+                        Message = "Existe un registro con el nombre proporcionado"
+                    };
+                }
+
+            
+                //var categoryResponse = await _categoryRepository.GetByNameAsync(newProduct.CategoryName);
+                //if (categoryResponse.Data == null)
+                //{
+                //    return new ServiceResponse<Product>
+                //    {
+                //        Data = null,
+                //        IsSuccess = false,
+                //        MessageCode = MessageCodes.NotFound,
+                //        Message = $"No existe una categoría con el nombre '{newProduct.CategoryName}'"
+                //    };
+                //}
+
+                
+                var product = new Product()
+                {
+                    //CategoryId = categoryResponse.Data.Id,
+                    CategoryId = newProduct.CategoryId,
+                    ProductName = newProduct.ProductName,
+                    PortionPrice = newProduct.PortionPrice,
+                    Description = newProduct.Description,
+                    Reconsumable = newProduct.Reconsumable,
+                };
+
+              
+                var result = await _productRepository.AddAsync(product);
+
+                return new ServiceResponse<Product>
+                {
+                    Data = result.Data,
+                    IsSuccess = true,
+                    MessageCode = MessageCodes.Sucess,
+                    Message = "Registro creado con exito",
+                };
+            }
+            catch (Exception)
+            {
+                return new ServiceResponse<Product>
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    MessageCode = MessageCodes.ErrorDataBase,
+                    Message = "Ocurrio un error inesperado",
+                };
+            }
+        }
+
+
+
+        public async Task<ServiceResponse<Product>> UpdateAsync(int id, UpdateProductDto product)
+        {
+            try
+            {
+                //validar que la categoria exista segun Id
+                var existingIdProduct = await _productRepository.GetByIdAsync(id);
+                if (existingIdProduct.Data!.Id == 0 && existingIdProduct.Data.ProductName.IsNullOrEmpty())
+                {
+                    return new ServiceResponse<Product>
+                    {
+                        Data = null,
+                        IsSuccess = false,
+                        MessageCode = MessageCodes.NotFound,
+                        Message = "No existe un producto asociado al Id proporcionado"
+
+                    };
+                }
+
+                //validar que el nombre enviado para el producto  no coincida con otro nombre existente
+                var existingNameProduct = await _productRepository.GetByNameAsync(product.ProductName);
+                if (existingNameProduct.Data!.ProductName != null && existingNameProduct.Data.Id != id)
+                {
+                    return new ServiceResponse<Product>
+                    {
+                        Data = null,
+                        IsSuccess = false,
+
+                        //NOTA: Agregar un nuevo tipo de codigo al Enum MessageCodes 
+                        //Este seria conflict
+
+                        MessageCode = MessageCodes.Conflict,
+                        Message = "ya existe un producto con el nombre proporcionado. No se debe duplicar el nombre"
+                    };
+                }
+                //mapeo 
+                var dataProduct = new Product()
+                {
+                    CategoryId = product.CategoryId, // ///
+                    ProductName = product.ProductName,
+                    PortionPrice = product.PortionPrice,
+                    Description = product.Description,
+                    State = product.State,
+                    Reconsumable = product.Reconsumable,
+                };
+
+
+                //llamando al metodo de repo
+                var result = await _productRepository.UpdateAsync(id, dataProduct);
+
+                return new ServiceResponse<Product>
+                {
+                    Data = result.Data,
+                    IsSuccess = true,
+                    MessageCode = MessageCodes.Sucess,
+                    Message = "Registro actualizado con exito",
+                };
+            }
+            catch (Exception)
+            {
+                return new ServiceResponse<Product>
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    MessageCode = MessageCodes.ErrorDataBase,
+                    Message = "Ocurrio un error inesperado",
+                };
+            }
+        }
+
+
+
+
+
+        public async Task<ServiceResponse<Product>> SetStateAsync(int productId, bool state)
+        {
+            var response = new ServiceResponse<Product>();
+
+            var existingProduct = await _productRepository.GetByIdAsync(productId);
+            if (existingProduct == null)
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.MessageCode = MessageCodes.ErrorValidation;
+                response.Message = "El producto no existe";
+                return response;
+            }
+
+ 
+            var repoResponse = await _productRepository.SetStateAsync(productId, state);
+
+            if (repoResponse.Data == null)
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.MessageCode = MessageCodes.ErrorValidation;
+                response.Message = "No se pudo actualizar el estado del producto";
+                return response;
+            }
+
+            response.Data = repoResponse.Data;
+            response.IsSuccess = true;
+            response.MessageCode = MessageCodes.Sucess;
+            response.Message = state ? "Producto activado" : "Producto desactivado";
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<Product>> SetReconsumableAsync(int productId, bool state)
+        {
+            var response = new ServiceResponse<Product>();
+
+            var existingProduct = await _productRepository.GetByIdAsync(productId);
+            if (existingProduct == null)
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.MessageCode = MessageCodes.ErrorValidation;
+                response.Message = "El producto no existe";
+                return response;
+            }
+
+
+            var repoResponse = await _productRepository.SetReconsumableAsync(productId, state);
+
+            if (repoResponse.Data == null)
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.MessageCode = MessageCodes.ErrorValidation;
+                response.Message = "No se pudo actualizar la consumibilidad del producto";
+                return response;
+            }
+
+            response.Data = repoResponse.Data;
+            response.IsSuccess = true;
+            response.MessageCode = MessageCodes.Sucess;
+            response.Message = state ? "Producto Reconsumible" : "Producto No Reconsumible";
+
+            return response;
+        }
+
+
+    }
+
+
+
+}
+

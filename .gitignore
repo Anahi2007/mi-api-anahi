@@ -43,3 +43,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# .NET backend: archivos de compilacion y configuracion privada
+**/bin/
+**/obj/
+**/.vs/
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/appsettings.Staging.json
+**/secrets.json
+**/*.user
+**/*.suo
+**/TestResults/
+
+# Variables de entorno privadas
+**/.env
+**/.env.*
+!**/.env.example

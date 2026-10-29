@@ -1,0 +1,111 @@
+ .gitignore                                         |  18 [32m+[m
+ .../Controllers/AuthController.cs                  | 220 [32m++++++++[m
+ .../Controllers/CategoriesController.cs            | 321 [32m++++++++++++[m
+ .../Controllers/CustomersController.cs             | 320 [32m++++++++++++[m
+ .../Controllers/InventoriesController.cs           | 234 [32m+++++++++[m
+ .../Controllers/InvoicesController.cs              |  93 [32m++++[m
+ .../Controllers/ProductsController.cs              | 366 [32m+++++++++++++[m
+ .../Controllers/RolesController.cs                 | 312 [32m+++++++++++[m
+ .../Controllers/SalesController.cs                 | 318 [32m++++++++++++[m
+ .../Controllers/SuppliersControllers.cs            | 164 [32m++++++[m
+ .../Controllers/UsersController.cs                 | 443 [32m++++++++++++++++[m
+ .../Controllers/WeatherForecastController.cs       |  33 [32m++[m
+ .../PROYECTO TIEN LAN ZU SHI.csproj                |  18 [32m+[m
+ .../PROYECTO TIEN LAN ZU SHI.http                  |   6 [32m+[m
+ .../PROYECTO TIEN LAN ZU SHI.sln                   |  43 [32m++[m
+ backend/PROYECTO TIEN LAN ZU SHI/Program.cs        | 139 [32m+++++[m
+ .../Properties/launchSettings.json                 |  41 [32m++[m
+ .../PROYECTO TIEN LAN ZU SHI/WeatherForecast.cs    |  13 [32m+[m
+ .../appsettings.example.json                       |  17 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/ApiResponse.cs   |   9 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/CategoryDto.cs   |  12 [32m+[m
+ .../DTOs/CreateCategoryDto.cs                      |  18 [32m+[m
+ .../DTOs/CreateCustomerDto.cs                      |  27 [32m+[m
+ .../DTOs/CreateInventoryDto.cs                     |  16 [32m+[m
+ .../DTOs/CreateProductDto.cs                       |  37 [32m++[m
+ .../TIEN LAN ZU SHI.Business/DTOs/CreateRoleDto.cs |  17 [32m+[m
+ .../DTOs/CreateSaleDetailDto.cs                    |  20 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/CreateSaleDto.cs |  20 [32m+[m
+ .../DTOs/CreateSupplierDto.cs                      |  33 [32m++[m
+ .../TIEN LAN ZU SHI.Business/DTOs/CreateUserDto.cs |  27 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/CustomerDto.cs   |  12 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/InventoryDto.cs  |  15 [32m+[m
+ .../DTOs/LoginRequestDto.cs                        |  20 [32m+[m
+ .../DTOs/LoginResponseDto.cs                       |  18 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/ProductDto.cs    |  19 [32m+[m
+ .../DTOs/RegisterUserDto.cs                        |  22 [32m+[m
+ backend/TIEN LAN ZU SHI.Business/DTOs/RoleDto.cs   |  16 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/SaleDetailDto.cs |  13 [32m+[m
+ backend/TIEN LAN ZU SHI.Business/DTOs/SaleDto.cs   |  11 [32m+[m
+ .../DTOs/SaleResponseDetailDto.cs                  |  17 [32m+[m
+ .../DTOs/SaleResponseDto.cs                        |  18 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/Supplier.Dto.cs  |  21 [32m+[m
+ .../DTOs/UnsuccessfulResponse.cs                   |  10 [32m+[m
+ .../DTOs/UpdateCategoryDto.cs                      |  22 [32m+[m
+ .../DTOs/UpdateCustomerDto.cs                      |  28 [32m+[m
+ .../DTOs/UpdateProductDto.cs                       |  35 [32m++[m
+ .../TIEN LAN ZU SHI.Business/DTOs/UpdateRoleDto.cs |  19 [32m+[m
+ .../DTOs/UpdateSupplierDto.cs                      |  20 [32m+[m
+ .../TIEN LAN ZU SHI.Business/DTOs/UpdateUserDto.cs |  31 [32m++[m
+ backend/TIEN LAN ZU SHI.Business/DTOs/UserDto.cs   |  31 [32m++[m
+ .../TIEN LAN ZU SHI.Business/DTOs/UserRoleDto.cs   |  14 [32m+[m
+ .../Interfaces/IAuthService.cs                     |  22 [32m+[m
+ .../Interfaces/ICategoryService.cs                 |  22 [32m+[m
+ .../Interfaces/ICustomerService.cs                 |  26 [32m+[m
+ .../Interfaces/IInventoryService.cs                |  20 [32m+[m
+ .../Interfaces/IInvoiceService.cs                  |  16 [32m+[m
+ .../Interfaces/IProductService.cs                  |  22 [32m+[m
+ .../Interfaces/IRoleService.cs                     |  21 [32m+[m
+ .../Interfaces/ISaleService.cs                     |  24 [32m+[m
+ .../Interfaces/ISupplierService.cs                 |  17 [32m+[m
+ .../Interfaces/IUserService.cs                     |  25 [32m+[m
+ .../Services/AuthService.cs                        | 312 [32m+++++++++++[m
+ .../Services/CategoryService.cs                    | 330 [32m++++++++++++[m
+ .../Services/CustomerService.cs                    | 327 [32m++++++++++++[m
+ .../Services/InventoryService.cs                   | 260 [32m+++++++++[m
+ .../Services/InvoiceService.cs                     | 141 [32m+++++[m
+ .../Services/ProductService.cs                     | 386 [32m++++++++++++++[m
+ .../Services/RoleService.cs                        | 322 [32m++++++++++++[m
+ .../Services/SaleService.cs                        | 392 [32m++++++++++++++[m
+ .../Services/SupplierService.cs                    |  44 [32m++[m
+ .../Services/UserService.cs                        | 429 [32m+++++++++++++++[m
+ .../TIEN LAN ZU SHI.Business.csproj                |  19 [32m+[m
+ .../TIEN LAN ZU SHI.Core/Common/MessageCodes.cs    |  20 [32m+[m
+ .../Common/RepositoryResponse.cs                   |  16 [32m+[m
+ .../TIEN LAN ZU SHI.Core/Common/ServiceResponse.cs |  16 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Category.cs  |  16 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Customer.cs  |  17 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Inventory.cs |  19 [32m+[m
+ .../Entities/InventoryProduct.cs                   |  18 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Invoice.cs   |  17 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Product.cs   |  23 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Role.cs      |  15 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Sale.cs      |  18 [32m+[m
+ .../TIEN LAN ZU SHI.Core/Entities/SaleDetail.cs    |  19 [32m+[m
+ .../Entities/SaleTransaction.cs                    |  14 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/Supplier.cs  |  21 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/User.cs      |  24 [32m+[m
+ backend/TIEN LAN ZU SHI.Core/Entities/UserRole.cs  |  15 [32m+[m
+ .../TIEN LAN ZU SHI.Core.csproj                    |  10 [32m+[m
+ .../Interfaces/IAuthRepository.cs                  |  19 [32m+[m
+ .../Interfaces/ICategoryRepository.cs              |  32 [32m++[m
+ .../Interfaces/ICustomerRepository.cs              |  33 [32m++[m
+ .../Interfaces/IInventoryRepository.cs             |  31 [32m++[m
+ .../Interfaces/IInvoiceRepository.cs               |  17 [32m+[m
+ .../Interfaces/IProductRepository.cs               |  35 [32m++[m
+ .../Interfaces/IRoleRepository.cs                  |  27 [32m+[m
+ .../Interfaces/ISaleRepository.cs                  |  19 [32m+[m
+ .../Interfaces/ISupplierRepository.cs              |  16 [32m+[m
+ .../Interfaces/IUserRepository.cs                  |  33 [32m++[m
+ .../Repositories/AuthRepository.cs                 | 234 [32m+++++++++[m
+ .../Repositories/CategoryRepository.cs             | 335 [32m++++++++++++[m
+ .../Repositories/CustomerRepository.cs             | 388 [32m++++++++++++++[m
+ .../Repositories/InventoryRepository.cs            | 258 [32m+++++++++[m
+ .../Repositories/InvoiceRepository.cs              | 180 [32m+++++++[m
+ .../Repositories/ProductRepository.cs              | 407 [32m+++++++++++++++[m
+ .../Repositories/RoleRepository.cs                 | 324 [32m++++++++++++[m
+ .../Repositories/SaleRepository.cs                 | 405 [32m+++++++++++++++[m
+ .../Repositories/SupplierRepository.cs             |  52 [32m++[m
+ .../Repositories/UserRepository.cs                 | 578 [32m+++++++++++++++++++++[m
+ .../TIEN LAN ZU SHI.DataAccess.csproj              |  19 [32m+[m
+ 110 files changed, 10684 insertions(+)
